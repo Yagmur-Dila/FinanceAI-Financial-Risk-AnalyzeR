@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceAI-Financial Risk Analyzer</title>
+    <!-- Harici CSS dosyasını bağlıyoruz -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>FinanceAI-Finansal Risk Analizörü 🧠</h2>
+        <p class="subtitle">AI Destekli Finansal Karar Destek Asistanı</p>
+
+        <form id="riskForm" novalidate>
+            <div class="form-group">
+                <label for="age">Yaşınız</label>
+                <input type="number" id="age" name="age" required min="1" max="100" placeholder="Örn: 25">
+                <div id="ageError" class="error-message" aria-live="polite"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="income">Aylık Geliriniz (TL)</label>
+                <input type="number" id="income" name="income" required placeholder="Örn: 40000">
+            </div>
+
+            <div class="form-group">
+                <label for="horizon">Yatırım Vadesi</label>
+                <select id="horizon" name="horizon" required>
+                    <option value="">Seçiniz...</option>
+                    <option value="short">0-1 Yıl (Kısa Vade)</option>
+                    <option value="medium">1-3 Yıl (Orta Vade)</option>
+                    <option value="long">3+ Yıl (Uzun Vade)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reaction">Piyasa %20 düşerse tepkiniz ne olur?</label>
+                <select id="reaction" name="reaction" required>
+                    <option value="">Seçiniz...</option>
+                    <option value="sell">Panikler ve hemen satarım</option>
+                    <option value="hold">Hiçbir şey yapmaz beklerim</option>
+                    <option value="buy">Fırsat bilir daha çok alırım</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ticker">Analiz Edilecek Hisse (Örn: THYAO.IS, AAPL)</label>
+                <input type="text" id="ticker" name="ticker" required placeholder="Hisse Kodu">
+            </div>
+
+            <button type="submit">Hisse Riskini Analiz Et</button>
+        </form>
+
+        <div id="resultArea">
+            <!-- AI modelinden dönen sonuç buraya yazılacak -->
+        </div>
+
+        <div class="disclaimer">
+            <strong>FinanceAI Bildirimi:</strong> Bu sistem bir yatırım tavsiyesi vermez. Girilen profil verileri ile hisse volatilitesini karşılaştıran bir risk analiz aracıdır. Son karar her zaman kullanıcıya aittir.
+        </div>
+    </div>
+
+    <!-- Harici JS dosyasını bağlıyoruz -->
+    <script src="script.js"></script>
+</body>
+</html>

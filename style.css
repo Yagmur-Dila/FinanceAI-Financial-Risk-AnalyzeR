@@ -1,0 +1,121 @@
+/* Modern, temiz ve FinTech uyumlu "Vibe" CSS */
+:root {
+    --bg-color: #f4f7fb;
+    --card-bg: #ffffff;
+    --primary: #1a4f8b;
+    --accent: #dcf7e3;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background-color: var(--card-bg);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    max-width: 500px;
+    width: 100%;
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--primary);
+    text-align: center;
+}
+
+p.subtitle {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9em;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+input[type="number"], select, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #123866;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.error-message {
+    margin-top: 8px;
+    color: #c0392b;
+    font-size: 0.9em;
+}
+
+.disclaimer {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: #fdf5e6;
+    border-left: 4px solid #f1c40f;
+    font-size: 0.8em;
+    color: #8a6d3b;
+    border-radius: 4px;
+}
+
+#resultArea {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    background-color: var(--accent);
+    color: var(--text-dark);
+}
