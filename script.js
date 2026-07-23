@@ -12,7 +12,7 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
 
 
     const resultArea = document.getElementById('resultArea');
-    if (yas < 1 || yas > 100) {
+    if (userData.age < 1 || userData.age > 100) {
     alert("Lütfen geçerli bir yaş giriniz.");
     return; // Hata varsa işlemi burada durdurur, sunucuya boşuna istek atmaz.
 }
