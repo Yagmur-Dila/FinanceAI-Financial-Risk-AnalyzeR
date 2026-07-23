@@ -10,7 +10,12 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
         ticker: document.getElementById('ticker').value.toUpperCase()
     };
 
+
     const resultArea = document.getElementById('resultArea');
+    if (yas < 1 || yas > 100) {
+    alert("Lütfen geçerli bir yaş giriniz.");
+    return; // Hata varsa işlemi burada durdurur, sunucuya boşuna istek atmaz.
+}
     resultArea.style.display = 'block';
     resultArea.style.backgroundColor = '#e0f7fa';
     resultArea.innerHTML = "AI Modeli Piyasa Verilerini Çekiyor ve Analiz Ediyor... ⏳";
