@@ -5,6 +5,9 @@ import pandas as pd
 import yfinance as yf
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv # YENİ EKLENEN
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app) # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
