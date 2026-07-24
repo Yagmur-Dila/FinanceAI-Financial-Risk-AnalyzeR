@@ -3,9 +3,16 @@ from flask_cors import CORS
 import joblib
 import pandas as pd
 import yfinance as yf
+import google.generativeai as genai
+import os
 
 app = Flask(__name__)
 CORS(app) # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
+
+# --- YENİ: Gemini API Ayarları ---
+# API anahtarını ortam değişkenlerinden veya doğrudan buraya string olarak ('SENIN_API_KEYIN') girebilirsin.
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) 
+gemini_model = genai.GenerativeModel('gemini-1.5-flash')
 
 # 1. Eğittiğimiz Modelleri Yükleme
 rf_model = joblib.load('risk_analiz_modeli.pkl')
@@ -32,16 +39,16 @@ def analyze():
         pred_encoded = rf_model.predict(user_df)[0]
         profil = le.inverse_transform([pred_encoded])[0]
 
-        # 4. Açıklanabilir AI (Explainable AI) Metni
+        # 4. Açıklanabilir AI (Explainable AI) Metni (SENİN ORİJİNAL KODUN)
         aciklama = f"Yapay zekâ modelimiz sizi '<strong>{profil}</strong>' bir yatırımcı olarak sınıflandırdı. "
         if profil == 'Defansif':
-            aciklama += "Risk toleransınız düşük olduğu için, yüksek volatiliteye sahip hisselerden uzak durmanız ve daha güvenli limanlarda kalmanız önerilir."
+            aciklama += "Risk toleransınız düşük olduğu için, yüksek volatiliteye sahip hisselerden uzak durmanız ve güvenli limanları tercih etmeniz önerilir."
         elif profil == 'Dengeli':
-            aciklama += "Orta seviye risk alabiliyorsunuz. Portföyünüzü çeşitlendirerek hem güvenli hem de büyüme odaklı hisselere yönelebilirsiniz."
+            aciklama += "Orta seviye risk alabiliyorsunuz. Portföyünüzü çeşitlendirerek hem güvenli hem de büyüme odaklı varlıklara yatırım yapabilirsiniz."
         else: # Agresif
-            aciklama += "Risk iştahınız yüksek. Uzun vadeli hedeflerle piyasadaki sert dalgalanmaları tolere edebilir ve agresif büyüme fırsatlarını değerlendirebilirsiniz."
+            aciklama += "Risk iştahınız yüksek. Uzun vadeli hedeflerle piyasadaki sert dalgalanmaları tolere edebilir, potansiyel yüksek getiriler için riskli varlıklara yönelebilirsiniz."
 
-        # 5. Canlı Piyasa Analizi (yfinance ile)
+        # 5. Canlı Piyasa Analizi (yfinance ile) (SENİN ORİJİNAL KODUN)
         try:
             stock = yf.Ticker(ticker)
             hist = stock.history(period="3mo") # Son 3 aylık veri
@@ -49,17 +56,41 @@ def analyze():
                 max_price = hist['High'].max()
                 min_price = hist['Low'].min()
                 volatilite = ((max_price - min_price) / min_price) * 100
-                hisse_durumu = f"<strong>{ticker}</strong> hissesi son 3 ayda <strong>%{volatilite:.1f}</strong> oranında dalgalanma (risk) göstermiştir."
+                hisse_durumu = f"<strong>{ticker}</strong> hissesi son 3 ayda <strong>%{volatilite:.1f}</strong> dalgalanma göstermiştir."
             else:
                 hisse_durumu = f"{ticker} kodlu hisse bulunamadı. (Türk hisseleri için sonuna .IS ekleyin, örn: THYAO.IS)"
         except:
             hisse_durumu = "Hisse verisi çekilirken bir piyasa hatası oluştu."
 
-        # 6. Sonucu HTML'e Gönderme
+        # 6. Gemini Yapay Zekâ Danışman (YENİ EKLENEN DİNAMİK MOTOR)
+        prompt = f"""
+        Sen vizyoner, dürüst ve gerçekçi bir yapay zekâ finans danışmanısın. 
+
+        Karşındaki yatırımcının bilgileri:
+        - Yaş: {yas}
+        - Bizim Algoritmamızın Belirlediği Risk Profili: {profil}
+        - İlgilendiği Hisse Kodu: {ticker}
+        - Hissenin Piyasa Durumu: {hisse_durumu}
+
+        Görevlerin:
+        1. Uyumsuzluk Analizi: Kullanıcının risk profili ile seçtiği hisse senedinin piyasa durumunu çarpıştır. Eğer bir zıtlık varsa uyar.
+        2. Stres Testi: Kullanıcıya gerçekçi bir senaryo sun.
+        3. Çıktı Formatı: Doğrudan kullanıcıya hitap et ("Sen" veya "Siz" diliyle). Sadece 3 cümlelik, akıcı, ezber bozan ve profesyonel bir tavsiye metni yaz. Merhaba, saygılar gibi gereksiz kelimeler kullanma. Sadece tavsiyeyi ver.
+        """
+        
+        try:
+            cevap = gemini_model.generate_content(prompt)
+            dinamik_tavsiye = cevap.text
+        except Exception as e:
+            # Eğer API'de anlık bir yoğunluk olursa kodun çökmemesi için güvenlik önlemi
+            dinamik_tavsiye = "Yapay zekâ tavsiye motorumuz şu an piyasa verilerini analiz ediyor, lütfen yukarıdaki teknik göstergeleri dikkate alınız."
+
+        # 7. Sonucu HTML'e Gönderme (Artık 'tavsiye' değişkenini de yolluyoruz)
         return jsonify({
             'profil': profil,
             'aciklama': aciklama,
-            'hisse_durumu': hisse_durumu
+            'hisse_durumu': hisse_durumu,
+            'tavsiye': dinamik_tavsiye 
         })
 
     except Exception as e:

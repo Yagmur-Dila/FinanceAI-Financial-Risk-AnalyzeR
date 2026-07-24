@@ -105,36 +105,21 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
         if (result.profil === 'Agresif') renk = '#ffcdd2'; // Kırmızı (Riskli)
 
         resultArea.style.backgroundColor = renk;
-        let tavsiyeMetni = "";
-let secilenHisse = userData.ticker; // Örneğin: "THYAO" veya "AAPL"
-
-if (result.profil === 'Defansif') {
-    tavsiyeMetni = `Siz yatırımlarınızda güvenliği ve anaparayı korumayı ön planda tutan birisiniz. <strong>${secilenHisse}</strong> gibi hisselerin anlık dalgalanmaları stratejinize ters düşebilir. Eğer bu hisse yüksek risk içeriyorsa, profilinize uymadığını belirtmek isteriz. Mevduat veya tahvil gibi güvenli limanları da sepetinize eklemelisiniz.`;
-} 
-else if (result.profil === 'Agresif') {
-    tavsiyeMetni = `Risk almaktan çekinmeyen, yüksek getiri hedefleyen cesur bir yapınız var! <strong>${secilenHisse}</strong> hissesindeki olası sert hareketler ve büyüme potansiyeli tam sizin stratejinize göre. Ancak tek bir hisseye bağlanmak yerine sepetinizi çeşitlendirmeyi unutmayın.`;
-} 
-else if (result.profil === 'Dengeli') {
-    tavsiyeMetni = `Ne çok risk, ne de düşük getiri... Tam bir portföy yöneticisi gibi dengeli düşünüyorsunuz. <strong>${secilenHisse}</strong> yatırımınızın yanına mutlaka güvenli liman araçları (altın vb.) ekleyerek portföyünüzü koruma altına almalısınız.`;
-}
-
-// Sonucu ve tavsiyeyi ekrana şık bir tasarımla basıyoruz
-resultArea.innerHTML = `
-    <div style="font-size: 20px; margin-bottom: 12px; color: #333;">
-        Yatırımcı Profiliniz: <strong>${result.profil}</strong>
-    </div>
-    <div style="font-size: 15px; line-height: 1.6; color: #555;">
-        ${tavsiyeMetni}
-    </div>
-`;
+        
         
         // Gelen detaylı AI açıklamasını ve canlı hisse verisini ekrana basma
-        resultArea.innerHTML = `
-            <h3 style="margin-top: 0; color: #1a4f8b;">Profiliniz: ${result.profil} 🎯</h3>
-            <p style="font-weight: normal; margin-bottom: 10px; line-height: 1.5;">${result.aciklama}</p>
-            <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 15px 0;">
-            <p style="font-weight: normal; font-size: 0.95em;">📊 <strong>Piyasa Notu:</strong> ${result.hisse_durumu}</p>
-        `;
+        resultArea.innerHTML =`
+    <h3 style="margin-top: 0; color: #1a4f8b;">Profiliniz: ${result.profil} 🎯</h3>
+    <p style="font-weight: normal; margin-bottom: 10px; line-height: 1.5;">${result.aciklama}</p>
+    
+    <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 15px 0;">
+    <p style="font-weight: normal; font-size: 0.95em; margin-bottom: 15px;">📊 <strong>Piyasa Notu:</strong> ${result.hisse_durumu}</p>
+    
+    <div style="background-color: rgba(255,255,255,0.5); padding: 12px; border-radius: 8px; border-left: 4px solid #1a4f8b;">
+        <strong style="color: #1a4f8b;">🤖 Yapay Zekâ Danışman:</strong><br>
+        <span style="font-size: 0.95em; line-height: 1.6; color: #333;">${result.tavsiye}</span>
+    </div>
+`;
 
     } catch (error) {
         resultArea.style.backgroundColor = '#ffcdd2';
