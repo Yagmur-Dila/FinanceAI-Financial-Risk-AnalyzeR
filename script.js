@@ -12,6 +12,12 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
 
 
     const resultArea = document.getElementById('resultArea');
+    if (userData.age === "" || userData.income === "" || userData.horizon === "" || userData.reaction === "" || userData.ticker === "") {
+    resultArea.style.display = 'block';
+    resultArea.style.backgroundColor = '#ffcdd2'; // Hata durumunda kırmızımsı arka plan
+    resultArea.innerHTML = "<strong>Hata:</strong> Lütfen bu alanı boş bırakmayınız.";
+    return; // Kodu burada durdurur, sunucuya boşuna eksik veri göndermez!
+}
     if (userData.age < 1 || userData.age > 100) {
     alert("Lütfen geçerli bir yaş giriniz.");
     return; // Hata varsa işlemi burada durdurur, sunucuya boşuna istek atmaz.
