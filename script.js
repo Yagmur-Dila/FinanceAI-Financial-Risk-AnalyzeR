@@ -1,30 +1,85 @@
+const form = document.getElementById('riskForm');
+const resultArea = document.getElementById('resultArea');
+
+function getErrorElement(fieldId) {
+    return document.getElementById(fieldId + 'Error');
+}
+
+function clearErrors() {
+    const fields = ['age', 'income', 'horizon', 'reaction', 'ticker'];
+    fields.forEach(fieldId => {
+        const errorElement = getErrorElement(fieldId);
+        const inputElement = document.getElementById(fieldId);
+        if (errorElement) errorElement.textContent = '';
+        if (inputElement) inputElement.classList.remove('input-error');
+    });
+    resultArea.style.display = 'none';
+}
+
+function setError(fieldId, message) {
+    const errorElement = getErrorElement(fieldId);
+    const inputElement = document.getElementById(fieldId);
+    if (errorElement) errorElement.textContent = message;
+    if (inputElement) inputElement.classList.add('input-error');
+}
+
 document.getElementById('riskForm').addEventListener('submit', async function(e) {
-    e.preventDefault(); 
-    
-    // Form verilerini toplama
+    e.preventDefault();
+    clearErrors();
+
+    const ageValue = document.getElementById('age').value.trim();
+    const incomeValue = document.getElementById('income').value.trim();
+    const horizonValue = document.getElementById('horizon').value;
+    const reactionValue = document.getElementById('reaction').value;
+    const tickerValue = document.getElementById('ticker').value.trim().toUpperCase();
+
+    let hasError = false;
+
+    if (ageValue === '') {
+        setError('age', 'Lütfen bu alanı boş bırakmayınız.');
+        hasError = true;
+    } else if (isNaN(Number(ageValue)) || Number(ageValue) < 1 || Number(ageValue) > 100) {
+        setError('age', 'Lütfen geçerli bir yaş giriniz.');
+        hasError = true;
+    }
+
+    if (incomeValue === '') {
+        setError('income', 'Lütfen bu alanı boş bırakmayınız.');
+        hasError = true;
+    }
+
+    if (horizonValue === '') {
+        setError('horizon', 'Lütfen bu alanı boş bırakmayınız.');
+        hasError = true;
+    }
+
+    if (reactionValue === '') {
+        setError('reaction', 'Lütfen bu alanı boş bırakmayınız.');
+        hasError = true;
+    }
+
+    if (tickerValue === '') {
+        setError('ticker', 'Lütfen bu alanı boş bırakmayınız.');
+        hasError = true;
+    }
+
+    if (hasError) {
+        const firstInvalid = form.querySelector('.input-error');
+        if (firstInvalid) firstInvalid.focus();
+        return;
+    }
+
     const userData = {
-        age: document.getElementById('age').value,
-        income: document.getElementById('income').value,
-        horizon: document.getElementById('horizon').value,
-        reaction: document.getElementById('reaction').value,
-        ticker: document.getElementById('ticker').value.toUpperCase()
+        age: ageValue,
+        income: incomeValue,
+        horizon: horizonValue,
+        reaction: reactionValue,
+        ticker: tickerValue
     };
 
-
-    const resultArea = document.getElementById('resultArea');
-    if (userData.age === "" || userData.income === "" || userData.horizon === "" || userData.reaction === "" || userData.ticker === "") {
-    resultArea.style.display = 'block';
-    resultArea.style.backgroundColor = '#ffcdd2'; // Hata durumunda kırmızımsı arka plan
-    resultArea.innerHTML = "<strong>Hata:</strong> Lütfen bu alanı boş bırakmayınız.";
-    return; // Kodu burada durdurur, sunucuya boşuna eksik veri göndermez!
-}
-    if (userData.age < 1 || userData.age > 100) {
-    alert("Lütfen geçerli bir yaş giriniz.");
-    return; // Hata varsa işlemi burada durdurur, sunucuya boşuna istek atmaz.
-}
     resultArea.style.display = 'block';
     resultArea.style.backgroundColor = '#e0f7fa';
-    resultArea.innerHTML = "AI Modeli Piyasa Verilerini Çekiyor ve Analiz Ediyor... ⏳";
+    resultArea.innerHTML = 'AI Modeli Piyasa Verilerini Çekiyor ve Analiz Ediyor... ⏳';
 
     try {
         // Flask Python sunucumuza (API) verileri gönderiyoruz
@@ -50,6 +105,28 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
         if (result.profil === 'Agresif') renk = '#ffcdd2'; // Kırmızı (Riskli)
 
         resultArea.style.backgroundColor = renk;
+        let tavsiyeMetni = "";
+let secilenHisse = userData.ticker; // Örneğin: "THYAO" veya "AAPL"
+
+if (result.profil === 'Defansif') {
+    tavsiyeMetni = `Siz yatırımlarınızda güvenliği ve anaparayı korumayı ön planda tutan birisiniz. <strong>${secilenHisse}</strong> gibi hisselerin anlık dalgalanmaları stratejinize ters düşebilir. Eğer bu hisse yüksek risk içeriyorsa, profilinize uymadığını belirtmek isteriz. Mevduat veya tahvil gibi güvenli limanları da sepetinize eklemelisiniz.`;
+} 
+else if (result.profil === 'Agresif') {
+    tavsiyeMetni = `Risk almaktan çekinmeyen, yüksek getiri hedefleyen cesur bir yapınız var! <strong>${secilenHisse}</strong> hissesindeki olası sert hareketler ve büyüme potansiyeli tam sizin stratejinize göre. Ancak tek bir hisseye bağlanmak yerine sepetinizi çeşitlendirmeyi unutmayın.`;
+} 
+else if (result.profil === 'Dengeli') {
+    tavsiyeMetni = `Ne çok risk, ne de düşük getiri... Tam bir portföy yöneticisi gibi dengeli düşünüyorsunuz. <strong>${secilenHisse}</strong> yatırımınızın yanına mutlaka güvenli liman araçları (altın vb.) ekleyerek portföyünüzü koruma altına almalısınız.`;
+}
+
+// Sonucu ve tavsiyeyi ekrana şık bir tasarımla basıyoruz
+resultArea.innerHTML = `
+    <div style="font-size: 20px; margin-bottom: 12px; color: #333;">
+        Yatırımcı Profiliniz: <strong>${result.profil}</strong>
+    </div>
+    <div style="font-size: 15px; line-height: 1.6; color: #555;">
+        ${tavsiyeMetni}
+    </div>
+`;
         
         // Gelen detaylı AI açıklamasını ve canlı hisse verisini ekrana basma
         resultArea.innerHTML = `

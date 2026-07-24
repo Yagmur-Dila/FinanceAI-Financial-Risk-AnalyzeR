@@ -63,12 +63,17 @@ input[type="number"], select, input[type="text"] {
     border: 1px solid #dfe6e9;
     border-radius: 8px;
     font-size: 1em;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: var(--primary);
+}
+
+.input-error {
+    border-color: #c0392b;
+    box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
 }
 
 button {
