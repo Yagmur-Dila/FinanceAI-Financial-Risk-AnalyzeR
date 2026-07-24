@@ -15,7 +15,7 @@ CORS(app) # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
 # --- YENİ: Gemini API Ayarları ---
 # API anahtarını ortam değişkenlerinden veya doğrudan buraya string olarak ('SENIN_API_KEYIN') girebilirsin.
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) 
-gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+gemini_model = genai.GenerativeModel('gemini-3.5-flash')
 
 # 1. Eğittiğimiz Modelleri Yükleme
 rf_model = joblib.load('risk_analiz_modeli.pkl')
@@ -67,7 +67,7 @@ def analyze():
 
         # 6. Gemini Yapay Zekâ Danışman (YENİ EKLENEN DİNAMİK MOTOR)
         prompt = f"""
-        Sen vizyoner, dürüst ve gerçekçi bir yapay zekâ finans danışmanısın. 
+        Sen vizyoner, dürüst, samimi, günlük dil kullanan ve gerçekçi bir yapay zekâ finans danışmanısın. Lütfen kullanıcılara karmaşık borsa terimleri ('spekülatif', 'vahşi dinamikler' vb.) kullanmadan, gayet günlük, sade ve bir arkadaşa tavsiye veriyormuş gibi bir dille tavsiye ver.
 
         Karşındaki yatırımcının bilgileri:
         - Yaş: {yas}
@@ -86,7 +86,7 @@ def analyze():
             dinamik_tavsiye = cevap.text
         except Exception as e:
             # Eğer API'de anlık bir yoğunluk olursa kodun çökmemesi için güvenlik önlemi
-            dinamik_tavsiye = "Yapay zekâ tavsiye motorumuz şu an piyasa verilerini analiz ediyor, lütfen yukarıdaki teknik göstergeleri dikkate alınız."
+            dinamik_tavsiye = f"SİSTEM HATASI: {str(e)}"
 
         # 7. Sonucu HTML'e Gönderme (Artık 'tavsiye' değişkenini de yolluyoruz)
         return jsonify({

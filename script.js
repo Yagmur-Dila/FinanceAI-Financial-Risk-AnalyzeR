@@ -83,7 +83,7 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
 
     try {
         // Flask Python sunucumuza (API) verileri gönderiyoruz
-        const response = await fetch('https://financeai-financial-risk-analyzer.onrender.com/api/analyze', {
+        const response = await fetch('https://financeai-financial-risk-analyzer.onrender.com', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
