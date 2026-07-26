@@ -79,7 +79,7 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
 
     resultArea.style.display = 'block';
     resultArea.style.backgroundColor = '#e0f7fa';
-    resultArea.innerHTML = 'AI Modeli Piyasa Verilerini Çekiyor ve Analiz Ediyor... ⏳';
+    resultArea.innerHTML = 'AI Modeli Piyasa Verilerini Çekiyor ve Analiz Ediyor...';
 
     try {
         // Flask Python sunucumuza (API) verileri gönderiyoruz
@@ -109,14 +109,14 @@ document.getElementById('riskForm').addEventListener('submit', async function(e)
         
         // Gelen detaylı AI açıklamasını ve canlı hisse verisini ekrana basma
         resultArea.innerHTML =`
-    <h3 style="margin-top: 0; color: #1a4f8b;">Profiliniz: ${result.profil} 🎯</h3>
+    <h3 style="margin-top: 0; color: #1a4f8b;">Profiliniz: ${result.profil}</h3>
     <p style="font-weight: normal; margin-bottom: 10px; line-height: 1.5;">${result.aciklama}</p>
     
     <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 15px 0;">
-    <p style="font-weight: normal; font-size: 0.95em; margin-bottom: 15px;">📊 <strong>Piyasa Notu:</strong> ${result.hisse_durumu}</p>
+    <p style="font-weight: normal; font-size: 0.95em; margin-bottom: 15px;"><strong>Piyasa Notu:</strong> ${result.hisse_durumu}</p>
     
     <div style="background-color: rgba(255,255,255,0.5); padding: 12px; border-radius: 8px; border-left: 4px solid #1a4f8b;">
-        <strong style="color: #1a4f8b;">🤖 Yapay Zekâ Danışman:</strong><br>
+        <strong style="color: #1a4f8b;">Yapay Zekâ Danışman:</strong><br>
         <span style="font-size: 0.95em; line-height: 1.6; color: #333;">${result.tavsiye}</span>
     </div>
 `;

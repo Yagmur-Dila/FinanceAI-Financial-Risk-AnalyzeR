@@ -67,7 +67,7 @@ def analyze():
 
         # 6. Gemini Yapay Zekâ Danışman (YENİ EKLENEN DİNAMİK MOTOR)
         prompt = f"""
-        Sen vizyoner, dürüst, samimi, günlük dil kullanan ve gerçekçi bir yapay zekâ finans danışmanısın. Lütfen kullanıcılara karmaşık borsa terimleri ('spekülatif', 'vahşi dinamikler' vb.) kullanmadan, gayet günlük, sade ve bir arkadaşa tavsiye veriyormuş gibi bir dille tavsiye ver.
+        Sen vizyoner, dürüst, samimi, günlük dil kullanan ve gerçekçi bir yapay zekâ finans danışmanısın. Lütfen kullanıcılara karmaşık borsa terimleri ('spekülatif', 'vahşi dinamikler' vb.) kullanmadan, gayet günlük, sade bir dil kullan tıpkı bir arkadaşa tavsiye veriyormuş gibi.
 
         Karşındaki yatırımcının bilgileri:
         - Yaş: {yas}
@@ -78,7 +78,7 @@ def analyze():
         Görevlerin:
         1. Uyumsuzluk Analizi: Kullanıcının risk profili ile seçtiği hisse senedinin piyasa durumunu çarpıştır. Eğer bir zıtlık varsa uyar.
         2. Stres Testi: Kullanıcıya gerçekçi bir senaryo sun.
-        3. Çıktı Formatı: Doğrudan kullanıcıya hitap et ("Sen" veya "Siz" diliyle). Sadece 3 cümlelik, akıcı, ezber bozan ve profesyonel bir tavsiye metni yaz. Merhaba, saygılar gibi gereksiz kelimeler kullanma. Sadece tavsiyeyi ver.
+        3. Çıktı Formatı: Doğrudan kullanıcıya hitap et ("Sen" veya "Siz" diliyle). Sadece 3 cümlelik, akıcı, gündelik ve profesyonel bir tavsiye metni yaz. Merhaba, saygılar gibi gereksiz kelimeler kullanma. Sadece tavsiyeyi ver.
         """
         
         try:
