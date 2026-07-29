@@ -13,7 +13,6 @@ app = Flask(__name__)
 CORS(app) # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
 
 # --- YENİ: Gemini API Ayarları ---
-# API anahtarını ortam değişkenlerinden veya doğrudan buraya string olarak ('SENIN_API_KEYIN') girebilirsin.
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) 
 gemini_model = genai.GenerativeModel('gemini-3.5-flash')
 
@@ -42,7 +41,7 @@ def analyze():
         pred_encoded = rf_model.predict(user_df)[0]
         profil = le.inverse_transform([pred_encoded])[0]
 
-        # 4. Açıklanabilir AI (Explainable AI) Metni (SENİN ORİJİNAL KODUN)
+        # 4. Açıklanabilir AI (Explainable AI) Metni 
         aciklama = f"Yapay zekâ modelimiz sizi '<strong>{profil}</strong>' bir yatırımcı olarak sınıflandırdı. "
         if profil == 'Defansif':
             aciklama += "Risk toleransınız düşük olduğu için, yüksek volatiliteye sahip hisselerden uzak durmanız ve güvenli limanları tercih etmeniz önerilir."
@@ -51,7 +50,7 @@ def analyze():
         else: # Agresif
             aciklama += "Risk iştahınız yüksek. Uzun vadeli hedeflerle piyasadaki sert dalgalanmaları tolere edebilir, potansiyel yüksek getiriler için riskli varlıklara yönelebilirsiniz."
 
-        # 5. Canlı Piyasa Analizi (yfinance ile) (SENİN ORİJİNAL KODUN)
+        # 5. Canlı Piyasa Analizi (yfinance ile)
         try:
             stock = yf.Ticker(ticker)
             hist = stock.history(period="3mo") # Son 3 aylık veri
@@ -85,8 +84,13 @@ def analyze():
             cevap = gemini_model.generate_content(prompt)
             dinamik_tavsiye = cevap.text
         except Exception as e:
-            # Eğer API'de anlık bir yoğunluk olursa kodun çökmemesi için güvenlik önlemi
-            dinamik_tavsiye = f"SİSTEM HATASI: {str(e)}"
+            hata_mesaji = str(e)
+            # Eğer hata mesajında 429 veya quota (kota) kelimesi geçiyorsa:
+        if "429" in hata_mesaji or "quota" in hata_mesaji.lower():
+            dinamik_tavsiye = "Günlük ücretsiz analiz limitimize ulaştık. İlginiz için çok teşekkürler, lütfen yarın tekrar deneyin! 😊"
+        # Eğer API'de anlık başka bir yoğunluk veya çökme olursa:
+        else:
+            dinamik_tavsiye = f"SİSTEM HATASI: {hata_mesaji}"
 
         # 7. Sonucu HTML'e Gönderme (Artık 'tavsiye' değişkenini de yolluyoruz)
         return jsonify({
