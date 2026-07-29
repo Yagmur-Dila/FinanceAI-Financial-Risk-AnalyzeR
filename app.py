@@ -5,15 +5,15 @@ import pandas as pd
 import yfinance as yf
 import google.generativeai as genai
 import os
-from dotenv import load_dotenv # YENİ EKLENEN
+from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app) # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
+CORS(app)  # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
 
 # --- YENİ: Gemini API Ayarları ---
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) 
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 gemini_model = genai.GenerativeModel('gemini-3.5-flash')
 
 # 1. Eğittiğimiz Modelleri Yükleme
@@ -23,6 +23,7 @@ le = joblib.load('label_encoder.pkl')
 # Metinleri sayılara çevirme sözlükleri (Eğitimdekiyle birebir aynı olmalı)
 vade_map = {'short': 0, 'medium': 1, 'long': 2}
 tepki_map = {'sell': 0, 'hold': 1, 'buy': 2}
+
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
@@ -47,13 +48,13 @@ def analyze():
             aciklama += "Risk toleransınız düşük olduğu için, yüksek volatiliteye sahip hisselerden uzak durmanız ve güvenli limanları tercih etmeniz önerilir."
         elif profil == 'Dengeli':
             aciklama += "Orta seviye risk alabiliyorsunuz. Portföyünüzü çeşitlendirerek hem güvenli hem de büyüme odaklı varlıklara yatırım yapabilirsiniz."
-        else: # Agresif
+        else:  # Agresif
             aciklama += "Risk iştahınız yüksek. Uzun vadeli hedeflerle piyasadaki sert dalgalanmaları tolere edebilir, potansiyel yüksek getiriler için riskli varlıklara yönelebilirsiniz."
 
         # 5. Canlı Piyasa Analizi (yfinance ile)
         try:
             stock = yf.Ticker(ticker)
-            hist = stock.history(period="3mo") # Son 3 aylık veri
+            hist = stock.history(period="3mo")  # Son 3 aylık veri
             if not hist.empty:
                 max_price = hist['High'].max()
                 min_price = hist['Low'].min()
@@ -79,29 +80,33 @@ def analyze():
         2. Stres Testi: Kullanıcıya gerçekçi bir senaryo sun.
         3. Çıktı Formatı: Doğrudan kullanıcıya hitap et ("Sen" veya "Siz" diliyle). Sadece 3 cümlelik, akıcı, gündelik ve profesyonel bir tavsiye metni yaz. Merhaba, saygılar gibi gereksiz kelimeler kullanma. Sadece tavsiyeyi ver.
         """
-        
+
         try:
             cevap = gemini_model.generate_content(prompt)
             dinamik_tavsiye = cevap.text
+            
         except Exception as e:
             hata_mesaji = str(e)
+            
             # Eğer hata mesajında 429 veya quota (kota) kelimesi geçiyorsa:
-        if "429" in hata_mesaji or "quota" in hata_mesaji.lower():
-            dinamik_tavsiye = "Günlük ücretsiz analiz limitimize ulaştık. İlginiz için çok teşekkürler, lütfen yarın tekrar deneyin! 😊"
-        # Eğer API'de anlık başka bir yoğunluk veya çökme olursa:
-        else:
-            dinamik_tavsiye = f"SİSTEM HATASI: {hata_mesaji}"
+            if "429" in hata_mesaji or "quota" in hata_mesaji.lower():
+                dinamik_tavsiye = "Günlük ücretsiz analiz limitimize ulaştık. İlginiz için çok teşekkürler, lütfen yarın tekrar deneyin! 😊"
+                
+            # Eğer API'de anlık başka bir yoğunluk veya çökme olursa:
+            else:
+                dinamik_tavsiye = f"SİSTEM HATASI: {hata_mesaji}"
 
         # 7. Sonucu HTML'e Gönderme (Artık 'tavsiye' değişkenini de yolluyoruz)
         return jsonify({
             'profil': profil,
             'aciklama': aciklama,
             'hisse_durumu': hisse_durumu,
-            'tavsiye': dinamik_tavsiye 
+            'tavsiye': dinamik_tavsiye
         })
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
