@@ -14,7 +14,7 @@ CORS(app)  # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
 
 # --- YENİ: Gemini API Ayarları ---
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-gemini_model = genai.GenerativeModel('gemini-3.5-flash')
+gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 
 # 1. Eğittiğimiz Modelleri Yükleme
 rf_model = joblib.load('risk_analiz_modeli.pkl')
