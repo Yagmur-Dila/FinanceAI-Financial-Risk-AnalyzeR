@@ -3,7 +3,7 @@ from flask_cors import CORS
 import joblib
 import pandas as pd
 import yfinance as yf
-import google.generativeai as genai
+from google import genai
 import os
 from dotenv import load_dotenv
 
@@ -13,8 +13,7 @@ app = Flask(__name__)
 CORS(app)  # HTML sayfamızın bu sunucuyla haberleşmesine izin verir
 
 # --- YENİ: Gemini API Ayarları ---
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-gemini_model = genai.GenerativeModel('gemini-3-flash-preview')
+client = genai.Client()
 
 # 1. Eğittiğimiz Modelleri Yükleme
 rf_model = joblib.load('risk_analiz_modeli.pkl')
@@ -82,7 +81,10 @@ def analyze():
         """
 
         try:
-            cevap = gemini_model.generate_content(prompt)
+            cevap = client.models.generate_content(
+    model='gemini-3-flash-preview',
+    contents=prompt
+)
             dinamik_tavsiye = cevap.text
             
         except Exception as e:
