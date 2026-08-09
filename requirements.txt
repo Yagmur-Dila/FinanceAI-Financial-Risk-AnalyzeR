@@ -1,6 +1,6 @@
 flask
 flask-cors
-Python 3.12.10
+Python 3.14.6
 scikit-learn 1.6.1
 pandas
 yfinance
