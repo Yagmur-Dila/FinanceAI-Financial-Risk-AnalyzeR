@@ -1,8 +1,9 @@
 flask
 flask-cors
-scikit-learn
+Python 3.12.10
+scikit-learn 1.6.1
 pandas
 yfinance
 gunicorn
-google-generativeai
+google-genai
 python-dotenv
